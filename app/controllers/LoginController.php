@@ -3,14 +3,17 @@
 namespace app\controllers;
 
 use flight\Engine;
+use app\model\Users;
+use Flight;
 
 class LoginController {
 
     protected Engine $app;
+    private Users $user;
 
     public function __construct(Engine $app) {
         $this->app = $app;
-        require_once __DIR__ . '/../helpers/functions.php';
+        $this->user = new Users(Flight::db());
     }
 
     public function show(): void {
@@ -28,7 +31,7 @@ class LoginController {
             return;
         }
 
-        $user = checkLogin($email, $password);
+        $user = $this->user->checkLogin($email, $password);
 
         if ($user === null) {
             $this->persistState('Invalid email or password.', $email);
